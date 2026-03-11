@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RBC Albayog City – Client PIN Registration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:    #C9A84C;
+      --gold-lt: #E8C96A;
+      --navy:    #0B1F3A;
+      --navy-lt: #122848;
+      --cream:   #F7F3EC;
+      --white:   #FFFFFF;
+      --red:     #C0392B;
+      --green:   #1A7A4A;
+      --shadow:  0 8px 40px rgba(11,31,58,0.18);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(201,168,76,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 90%, rgba(201,168,76,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: var(--shadow), 0 0 0 1px rgba(201,168,76,0.15);
+      overflow: hidden;
+      animation: slideUp 0.6s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-lt) 100%);
+      padding: 32px 36px 28px;
+      text-align: center;
+      border-bottom: 3px solid var(--gold);
+      position: relative;
+    }
+
+    .bank-logo {
+      width: 60px; height: 60px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px;
+      font-size: 26px;
+      box-shadow: 0 4px 16px rgba(201,168,76,0.35);
+    }
+
+    .card-header h1 {
+      font-family: 'Playfair Display', serif;
+      color: var(--white);
+      font-size: 1.45rem;
+      letter-spacing: 0.3px;
+    }
+
+    .card-header p {
+      color: rgba(255,255,255,0.55);
+      font-size: 0.8rem;
+      margin-top: 4px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: var(--cream);
+      border-bottom: 1px solid #E0D8CC;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #8A7F70;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+    }
+
+    .tab-btn.active {
+      color: var(--navy);
+      background: var(--white);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--gold);
+    }
+
+    /* Form Body */
+    .form-body {
+      padding: 32px 36px 28px;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #6B6257;
+      margin-bottom: 7px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid #DDD5C8;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem;
+      color: var(--navy);
+      background: var(--cream);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+      background: #FFFDF8;
+    }
+
+    /* PIN display */
+    .pin-display {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .pin-digit {
+      flex: 1;
+      height: 52px;
+      border: 2px solid #DDD5C8;
+      border-radius: 10px;
+      background: var(--cream);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--navy);
+      font-weight: 700;
+      transition: all 0.3s;
+    }
+
+    .pin-digit.filled {
+      border-color: var(--gold);
+      background: #FFFAEE;
+      box-shadow: 0 2px 8px rgba(201,168,76,0.2);
+    }
+
+    .pin-row {
+      display: flex; gap: 10px; align-items: flex-end;
+    }
+
+    .pin-row .field { flex: 1; }
+
+    .generate-btn {
+      height: 44px;
+      padding: 0 18px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      color: var(--navy);
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      white-space: nowrap;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(201,168,76,0.3);
+    }
+
+    .generate-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(201,168,76,0.4);
+    }
+
+    .generate-btn:active { transform: translateY(0); }
+
+    /* Submit */
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-lt) 100%);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, #0D2547, #1A3A6E);
+      box-shadow: 0 4px 20px rgba(11,31,58,0.35);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6; cursor: not-allowed;
+    }
+
+    .submit-btn .spinner {
+      display: none;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 24px; right: 24px;
+      min-width: 280px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      z-index: 9999;
+      transform: translateX(120%);
+      transition: transform 0.4s cubic-bezier(.22,1,.36,1);
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+
+    .toast.show { transform: translateX(0); }
+    .toast.success { background: #EAFAF1; border-left: 4px solid var(--green); color: #155235; }
+    .toast.error   { background: #FDEDEC; border-left: 4px solid var(--red);   color: #922B21; }
+    .toast.info    { background: #EAF2FB; border-left: 4px solid #2980B9;       color: #1A5276; }
+
+    .toast-icon { font-size: 1.1rem; margin-top: 1px; flex-shrink: 0; }
+
+    /* Result box */
+    .result-box {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .result-box.show { display: block; animation: fadeIn 0.4s ease; }
+    .result-box.success { background: #EAFAF1; border: 1.5px solid #82E0AA; color: #1A7A4A; }
+    .result-box.error   { background: #FDEDEC; border: 1.5px solid #F1948A; color: #C0392B; }
+
+    .result-box strong { display: block; font-size: 0.95rem; margin-bottom: 4px; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* PIN mask toggle */
+    .pin-input-wrap {
+      position: relative;
+    }
+
+    .pin-input-wrap input {
+      letter-spacing: 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .toggle-vis {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; font-size: 1rem;
+      color: #999; padding: 4px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      color: var(--navy);
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1.5px solid #EDE7DC;
+    }
+
+    .hint {
+      font-size: 0.75rem;
+      color: #9B8E80;
+      margin-top: 5px;
+    }
+
+    .generated-pin-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      color: var(--navy);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 12px;
+      padding: 10px 22px;
+      border-radius: 8px;
+      margin-top: 8px;
+      box-shadow: 0 3px 12px rgba(201,168,76,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <span class="toast-icon" id="toast-icon"></span>
+    <span id="toast-msg"></span>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="bank-logo">🏦</div>
+      <h1>Client PIN Portal</h1>
+      <p>Rural Bank of Albayog City</p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('register')">📋 Register PIN</button>
+      <button class="tab-btn" onclick="switchTab('verify')">🔐 Verify PIN</button>
+    </div>
+
+    <div class="form-body">
+
+      <!-- ── REGISTER TAB ── -->
+      <div class="tab-panel active" id="tab-register">
+        <div class="section-title">New PIN Registration</div>
+
+        <div class="field">
+          <label>Account Number</label>
+          <input type="text" id="reg-account" placeholder="e.g. 0001-2345-6789" maxlength="20"/>
+        </div>
+
+        <div style="display:flex; gap:14px;">
+          <div class="field" style="flex:1">
+            <label>Client Full Name</label>
+            <input type="text" id="reg-name" placeholder="Last, First MI"/>
+          </div>
+          <div class="field" style="flex:0 0 130px">
+            <label>Date of Birth</label>
+            <input type="date" id="reg-dob"/>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Account Type</label>
+          <select id="reg-type">
+            <option value="">— Select —</option>
+            <option>Regular Savings</option>
+            <option>Time Deposit</option>
+            <option>Current Account</option>
+            <option>ATM Savings</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Branch</label>
+          <input type="text" id="reg-branch" value="Albayog City Main Branch"/>
+        </div>
+
+        <div class="pin-row">
+          <div class="field">
+            <label>Auto-Generated PIN</label>
+            <div class="pin-display" id="pin-display">
+              <div class="pin-digit" id="d0">–</div>
+              <div class="pin-digit" id="d1">–</div>
+              <div class="pin-digit" id="d2">–</div>
+              <div class="pin-digit" id="d3">–</div>
+            </div>
+            <p class="hint">Click "Generate PIN" to create a secure 4-digit PIN</p>
+          </div>
+          <button class="generate-btn" onclick="generatePIN()">⟳ Generate PIN</button>
+        </div>
+
+        <button class="submit-btn" id="reg-btn" onclick="registerPIN()">
+          <span id="reg-btn-text">Register &amp; Save to Drive</span>
+          <div class="spinner" id="reg-spinner"></div>
+        </button>
+
+        <div class="result-box" id="reg-result"></div>
+      </div>
+
+      <!-- ── VERIFY TAB ── -->
+      <div class="tab-panel" id="tab-verify">
+        <div class="section-title">Withdrawal PIN Verification</div>
+
+        <div class="field">
+          <label>Account Number</label>
+          <input type="text" id="ver-account" placeholder="Enter registered account number" maxlength="20"/>
+        </div>
+
+        <div class="field">
+          <label>Enter PIN</label>
+          <div class="pin-input-wrap">
+            <input type="password" id="ver-pin" placeholder="••••" maxlength="4"
+              oninput="this.value=this.value.replace(/\D/g,'')"/>
+            <button class="toggle-vis" onclick="togglePinVis()" title="Toggle visibility">👁</button>
+          </div>
+          <p class="hint">Enter the 4-digit PIN issued during registration</p>
+        </div>
+
+        <div class="field">
+          <label>Transaction Amount (₱)</label>
+          <input type="number" id="ver-amount" placeholder="0.00" min="0" step="0.01"/>
+        </div>
+
+        <div class="field">
+          <label>Teller / Staff Name</label>
+          <input type="text" id="ver-teller" placeholder="Processed by"/>
+        </div>
+
+        <button class="submit-btn" id="ver-btn" onclick="verifyPIN()">
+          <span id="ver-btn-text">Verify PIN &amp; Log Transaction</span>
+          <div class="spinner" id="ver-spinner"></div>
+        </button>
+
+        <div class="result-box" id="ver-result"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════ SCRIPT ════════════ -->
+  <script>
+    // ── CONFIG ─────────────────────────────────────────────────
+    const SHEET_ID   = '1whdnpHcwe_nlStct4E_FBG027u1rccyxSwe_EKCq06o';
+    // NOTE: Replace with your own Google Apps Script Web App URL (see instructions below)
+    const GAS_URL    = 'https://script.google.com/macros/s/AKfycbx8J7XZEk2f4tH-Kh1eLk3quWHoGMERv1hSa_zKfIxWQeZ-NpHL56uZNb0PLqURO9J68A/exec';
+    // ────────────────────────────────────────────────────────────
+
+    let currentPIN = '';
+
+    // ── TAB SWITCHING ───────────────────────────────────────────
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // ── PIN GENERATION ──────────────────────────────────────────
+    function generatePIN() {
+      const digits = Array.from({length:4}, () => Math.floor(Math.random() * 10));
+      currentPIN = digits.join('');
+      ['d0','d1','d2','d3'].forEach((id, i) => {
+        const el = document.getElementById(id);
+        el.textContent = digits[i];
+        el.classList.add('filled');
+        el.style.animation = 'none';
+        setTimeout(() => {
+          el.style.animation = '';
+          el.style.transition = 'all 0.3s ease';
+        }, 10);
+      });
+      showToast('info', 'ℹ️', 'PIN generated successfully. Please note it down.');
+    }
+
+    // ── REGISTER ────────────────────────────────────────────────
+    async function registerPIN() {
+      const account = v('reg-account');
+      const name    = v('reg-name');
+      const dob     = v('reg-dob');
+      const type    = v('reg-type');
+      const branch  = v('reg-branch');
+
+      if (!account || !name || !dob || !type) return showToast('error','❌','Please fill in all required fields.');
+      if (!currentPIN)                         return showToast('error','❌','Please generate a PIN first.');
+
+      setLoading('reg', true);
+
+      const payload = {
+        action:    'register',
+        account,
+        name,
+        dob,
+        accountType: type,
+        branch,
+        pin:        currentPIN,
+        registeredAt: new Date().toLocaleString('en-PH', {timeZone:'Asia/Manila'})
+      };
+
+      try {
+        const res = await postToSheet(payload);
+        if (res.status === 'success') {
+          showResult('reg-result', 'success',
+            `✅ Registration Successful`,
+            `Account: <b>${account}</b> &nbsp;|&nbsp; Name: <b>${name}</b><br>
+             PIN has been saved to Google Drive for future withdrawal verification.`);
+          showToast('success','✅','Client PIN registered and saved to Drive!');
+          // Reset
+          ['reg-account','reg-name','reg-dob','reg-branch'].forEach(id => document.getElementById(id).value='');
+          document.getElementById('reg-type').value='';
+          document.getElementById('reg-branch').value='Albayog City Main Branch';
+          ['d0','d1','d2','d3'].forEach(id => {
+            const el = document.getElementById(id);
+            el.textContent = '–'; el.classList.remove('filled');
+          });
+          currentPIN = '';
+        } else {
+          throw new Error(res.message || 'Unknown error');
+        }
+      } catch (e) {
+        showResult('reg-result','error','❌ Registration Failed', e.message);
+        showToast('error','❌', e.message);
+      }
+      setLoading('reg', false);
+    }
+
+    // ── VERIFY ───────────────────────────────────────────────────
+    async function verifyPIN() {
+      const account = v('ver-account');
+      const pin     = v('ver-pin');
+      const amount  = v('ver-amount');
+      const teller  = v('ver-teller');
+
+      if (!account || !pin)   return showToast('error','❌','Account number and PIN are required.');
+      if (pin.length !== 4)   return showToast('error','❌','PIN must be exactly 4 digits.');
+
+      setLoading('ver', true);
+
+      const payload = {
+        action:  'verify',
+        account,
+        pin,
+        amount:  amount || '—',
+        teller:  teller || '—',
+        verifiedAt: new Date().toLocaleString('en-PH', {timeZone:'Asia/Manila'})
+      };
+
+      try {
+        const res = await postToSheet(payload);
+        if (res.status === 'success' && res.match === true) {
+          showResult('ver-result','success',
+            '✅ PIN Verified — Transaction Approved',
+            `Account: <b>${account}</b><br>
+             Amount: <b>₱ ${parseFloat(amount||0).toLocaleString('en-PH',{minimumFractionDigits:2})}</b><br>
+             Teller: <b>${teller||'—'}</b><br>
+             This transaction has been logged to Google Drive.`);
+          showToast('success','✅','PIN matched. Withdrawal approved!');
+        } else if (res.status === 'success' && res.match === false) {
+          showResult('ver-result','error',
+            '❌ PIN Mismatch — Transaction Declined',
+            'The PIN entered does not match the registered PIN for this account. Please try again or contact the branch.');
+          showToast('error','❌','PIN mismatch. Transaction declined.');
+        } else {
+          throw new Error(res.message || 'Verification failed');
+        }
+      } catch(e) {
+        showResult('ver-result','error','❌ Verification Error', e.message);
+        showToast('error','❌', e.message);
+      }
+      setLoading('ver', false);
+    }
+
+    // ── HELPERS ──────────────────────────────────────────────────
+    function v(id) { return document.getElementById(id).value.trim(); }
+
+    function togglePinVis() {
+      const inp = document.getElementById('ver-pin');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+    }
+
+    function setLoading(prefix, on) {
+      const btn  = document.getElementById(prefix+'-btn');
+      const text = document.getElementById(prefix+'-btn-text');
+      const spin = document.getElementById(prefix+'-spinner');
+      btn.disabled  = on;
+      text.style.display = on ? 'none' : '';
+      spin.style.display = on ? 'block' : 'none';
+    }
+
+    function showResult(id, type, title, body) {
+      const el = document.getElementById(id);
+      el.className = `result-box show ${type}`;
+      el.innerHTML = `<strong>${title}</strong>${body}`;
+    }
+
+    let toastTimer;
+    function showToast(type, icon, msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-icon').textContent = icon;
+      document.getElementById('toast-msg').textContent  = msg;
+      t.className = `toast ${type} show`;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+    }
+
+    // ── SHEET COMMUNICATION ──────────────────────────────────────
+    async function postToSheet(payload) {
+      if (GAS_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEBAPP_URL') {
+        // DEMO MODE: simulate success so the UI is testable without a backend
+        await new Promise(r => setTimeout(r, 1200));
+        if (payload.action === 'register') {
+          return { status: 'success' };
+        }
+        // Demo verify: accept PIN "1234" for any account
+        return { status: 'success', match: payload.pin === '1234' };
+      }
+
+      const res = await fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      return await res.json();
+    }
+  </script>
+
+  <!-- ════════ SETUP INSTRUCTIONS (hidden comment) ════════
+  
+  HOW TO CONNECT THIS FORM TO YOUR GOOGLE SHEET
+  ================================================
+
+  1. Open the Google Sheet:
+     https://docs.google.com/spreadsheets/d/1whdnpHcwe_nlStct4E_FBG027u1rccyxSwe_EKCq06o
+
+  2. Go to Extensions → Apps Script
+
+  3. Paste this code in the editor and SAVE:
+
+  ─────────────────────────────────────────────────────────
+  const SHEET_ID = '1whdnpHcwe_nlStct4E_FBG027u1rccyxSwe_EKCq06o';
+
+  function doPost(e) {
+    const data = JSON.parse(e.postData.contents);
+    const ss   = SpreadsheetApp.openById(SHEET_ID);
+
+    if (data.action === 'register') {
+      let sheet = ss.getSheetByName('PIN_Registry');
+      if (!sheet) {
+        sheet = ss.insertSheet('PIN_Registry');
+        sheet.appendRow(['Account No','Name','DOB','Account Type','Branch','PIN','Registered At']);
+      }
+      sheet.appendRow([data.account, data.name, data.dob, data.accountType,
+                       data.branch, data.pin, data.registeredAt]);
+      return ContentService.createTextOutput(JSON.stringify({status:'success'}))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (data.action === 'verify') {
+      const sheet = ss.getSheetByName('PIN_Registry');
+      if (!sheet) return json({status:'error', message:'No registry found.'});
+      const rows = sheet.getDataRange().getValues();
+      let match  = false;
+      for (let i = 1; i < rows.length; i++) {
+        if (String(rows[i][0]).trim() === String(data.account).trim()) {
+          match = String(rows[i][5]).trim() === String(data.pin).trim();
+          break;
+        }
+      }
+      // Log transaction
+      let logSheet = ss.getSheetByName('Transaction_Log');
+      if (!logSheet) {
+        logSheet = ss.insertSheet('Transaction_Log');
+        logSheet.appendRow(['Timestamp','Account No','Amount','Teller','PIN Match','Verified At']);
+      }
+      logSheet.appendRow([new Date(), data.account, data.amount,
+                          data.teller, match ? 'MATCHED':'MISMATCH', data.verifiedAt]);
+      return ContentService.createTextOutput(JSON.stringify({status:'success', match}))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return json({status:'error', message:'Unknown action'});
+  }
+
+  function json(obj) {
+    return ContentService.createTextOutput(JSON.stringify(obj))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  ─────────────────────────────────────────────────────────
+
+  4. Click Deploy → New Deployment
+     - Type: Web App
+     - Execute as: Me
+     - Who has access: Anyone
+  
+  5. Copy the Web App URL
+
+  6. In this HTML file, replace:
+     const GAS_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEBAPP_URL';
+     with the URL you copied.
+
+  ================================================ -->
+</body>
+</html>
